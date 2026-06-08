@@ -1,0 +1,3 @@
+interface:
+  display_name: "Dynamics Case Investigator"
+  short_description: "Summarize Dynamics cases with historical case and Jira evidence."
