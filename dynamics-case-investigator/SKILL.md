@@ -99,25 +99,28 @@ Do not claim a product defect, documentation error, customer configuration probl
 
 ### 6. Log the investigation
 
-After producing the investigation summary, append one row to `~/codex-case-investigation-logs/case-investigations.csv` using `scripts/append_case_log.py` when filesystem access is available.
+After producing the investigation summary, append one row to:
+`~/codex-case-investigation-logs/case-investigations.csv`
 
-Log only concise operational metadata, not verbatim internal notes or sensitive customer communications. Leave `Agent Rating` and `Outcome` blank unless the user provides them or they are already known.
+Use `scripts/append_case_log.py` when filesystem access is available.
 
-Use these fields:
+Use the current date/time for `Run Date`. Use the current Codex/user name if known for `Agent`; otherwise use `Unknown`.
 
-- `Run Date`: current local date/time.
-- `Agent`: support agent name if known; otherwise `Unknown`.
-- `Case Number`: Dynamics case number.
-- `Customer`: account/customer name.
-- `Product`: affected product or service.
-- `Similar Cases Found`: count of relevant historical Dynamics cases included.
-- `Jira Records Found`: count of relevant Jira records included.
-- `Confidence`: `High`, `Medium`, or `Low`.
-- `Recommended Action`: short version of the primary next step.
-- `Time Saved Estimate`: estimated time saved by the investigation, such as `30 minutes`.
-- `Agent Rating`: blank unless supplied.
-- `Outcome`: blank unless supplied.
-- `Notes`: brief non-sensitive note, blocker, or follow-up reminder.
+Populate:
+
+- `Case Number` from the reviewed Dynamics case.
+- `Customer` from the case account/customer.
+- `Product` from the case product/service.
+- `Similar Cases Found` as the count of relevant historical Dynamics cases included.
+- `Jira Records Found` as the count of relevant Jira records included.
+- `Confidence` from the Likely Root Cause section.
+- `Recommended Action` as a short summary of the primary next step.
+- `Time Saved Estimate` as a rough estimate, for example `30 minutes`.
+- `Agent Rating` blank unless provided by the user.
+- `Outcome` blank unless known.
+- `Notes` with short context or blockers.
+
+Do not log unsupported assumptions as facts. Log only concise operational metadata, not verbatim internal notes or sensitive customer communications.
 
 Command template:
 
