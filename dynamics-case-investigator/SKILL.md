@@ -103,6 +103,7 @@ After producing the investigation summary, append one row to:
 `~/codex-case-investigation-logs/case-investigations.csv`
 
 Use `scripts/append_case_log.py` when filesystem access is available.
+If `CODEX_CASE_LOG_FILE` is set, the script writes to that shared/team CSV path; otherwise it writes to the local default above.
 
 Use the current date/time for `Run Date`. Use the current Codex/user name if known for `Agent`; otherwise use `Unknown`.
 

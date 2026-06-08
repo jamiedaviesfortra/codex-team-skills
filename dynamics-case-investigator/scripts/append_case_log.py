@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -27,13 +28,21 @@ COLUMNS = [
 
 
 DEFAULT_LOG_FILE = "~/codex-case-investigation-logs/case-investigations.csv"
+LOG_FILE_ENV_VAR = "CODEX_CASE_LOG_FILE"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Append a row to the Dynamics case investigation CSV log."
     )
-    parser.add_argument("--log-file", default=DEFAULT_LOG_FILE)
+    parser.add_argument(
+        "--log-file",
+        default=os.environ.get(LOG_FILE_ENV_VAR, DEFAULT_LOG_FILE),
+        help=(
+            "CSV log path. Defaults to CODEX_CASE_LOG_FILE when set, "
+            f"otherwise {DEFAULT_LOG_FILE}."
+        ),
+    )
     parser.add_argument(
         "--run-date",
         default=datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
