@@ -102,7 +102,7 @@ Do not claim a product defect, documentation error, customer configuration probl
 After producing the investigation summary, append one row to:
 `~/codex-case-investigation-logs/case-investigations.csv`
 
-Use `scripts/append_case_log.py` when filesystem access is available.
+Use `scripts/append_case_log.py` when filesystem access is available. On Windows, use `scripts/append_case_log.ps1` if Python is unavailable.
 If `CODEX_CASE_LOG_FILE` is set, the script writes to that shared/team CSV path; otherwise it writes to the local default above.
 
 Use the current date/time for `Run Date`. Use the current Codex/user name if known for `Agent`; otherwise use `Unknown`.
@@ -140,6 +140,22 @@ python3 scripts/append_case_log.py \
 ```
 
 If the log write fails, still provide the investigation summary and state that the logging step could not be completed.
+
+Windows PowerShell template:
+
+```powershell
+.\scripts\append_case_log.ps1 `
+  -CaseNumber "CAS-0010812184" `
+  -Agent "Unknown" `
+  -Customer "Customer name" `
+  -Product "Product name" `
+  -SimilarCasesFound 0 `
+  -JiraRecordsFound 0 `
+  -Confidence "Medium" `
+  -RecommendedAction "Primary recommended action" `
+  -TimeSavedEstimate "30 minutes" `
+  -Notes "Concise non-sensitive note"
+```
 
 ## Output Format
 
