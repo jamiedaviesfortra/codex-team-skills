@@ -97,6 +97,46 @@ Separate evidence from assumptions. Root-cause confidence must be one of:
 
 Do not claim a product defect, documentation error, customer configuration problem, or official workaround unless supported by Dynamics/Jira evidence or cited documentation.
 
+### 6. Log the investigation
+
+After producing the investigation summary, append one row to `~/codex-case-investigation-logs/case-investigations.csv` using `scripts/append_case_log.py` when filesystem access is available.
+
+Log only concise operational metadata, not verbatim internal notes or sensitive customer communications. Leave `Agent Rating` and `Outcome` blank unless the user provides them or they are already known.
+
+Use these fields:
+
+- `Run Date`: current local date/time.
+- `Agent`: support agent name if known; otherwise `Unknown`.
+- `Case Number`: Dynamics case number.
+- `Customer`: account/customer name.
+- `Product`: affected product or service.
+- `Similar Cases Found`: count of relevant historical Dynamics cases included.
+- `Jira Records Found`: count of relevant Jira records included.
+- `Confidence`: `High`, `Medium`, or `Low`.
+- `Recommended Action`: short version of the primary next step.
+- `Time Saved Estimate`: estimated time saved by the investigation, such as `30 minutes`.
+- `Agent Rating`: blank unless supplied.
+- `Outcome`: blank unless supplied.
+- `Notes`: brief non-sensitive note, blocker, or follow-up reminder.
+
+Command template:
+
+```bash
+python3 scripts/append_case_log.py \
+  --case-number "CAS-0010812184" \
+  --agent "Unknown" \
+  --customer "Customer name" \
+  --product "Product name" \
+  --similar-cases-found 0 \
+  --jira-records-found 0 \
+  --confidence "Medium" \
+  --recommended-action "Primary recommended action" \
+  --time-saved-estimate "30 minutes" \
+  --notes "Concise non-sensitive note"
+```
+
+If the log write fails, still provide the investigation summary and state that the logging step could not be completed.
+
 ## Output Format
 
 Use the following sections in this exact order unless the user asks for a different format. Keep the final output concise but detailed enough for an agent to act immediately.
