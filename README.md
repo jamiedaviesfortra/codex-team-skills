@@ -2,6 +2,8 @@
 
 Codex Team Skills
 
+For full Mac and Windows setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
+
 ## One-click setup
 
 Requirements:
