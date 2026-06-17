@@ -89,11 +89,20 @@ If no relevant Jira records are found, explicitly say so.
 
 ### 5. Synthesize findings and confidence
 
-Separate evidence from assumptions. Root-cause confidence must be one of:
+Separate evidence from assumptions. Track the specific sources that support each key finding, the validation data that is still missing, and any search or connector limits that could affect the answer.
+
+Root-cause confidence must be one of:
 
 - High: Direct evidence from current case plus matching resolved cases or confirmed Jira defect/known issue.
 - Medium: Strong pattern match, but key validation evidence is missing or Jira/Product confirmation is pending.
 - Low: Limited or circumstantial evidence; more diagnostics are needed.
+
+Apply confidence gating:
+
+- For Low confidence, do not state a firm root cause. Provide hypotheses and diagnostic next steps only.
+- For Medium confidence, state the most likely cause only with clear missing validation.
+- For High confidence, require direct current-case evidence plus a matching resolved historical case, confirmed Jira defect/known issue, or official documentation.
+- If relevance depends mainly on shared product name, broad symptom wording, or an unverified version match, cap confidence at Low.
 
 Do not claim a product defect, documentation error, customer configuration problem, or official workaround unless supported by Dynamics/Jira evidence or cited documentation.
 
@@ -177,11 +186,27 @@ List the most relevant previous Dynamics cases. For each, include case number, t
 
 List relevant Jira tickets. For each, include Jira key, title, issue type/status, priority if useful, linked product/release/version when available, and why it matters. If none were found, write: "No relevant Jira records were found from the available searches."
 
+### Evidence Used
+
+List the exact Dynamics cases, Jira records, documentation links, release notes, or other sources that support the key findings. For each source, explain what claim it supports. Do not cite a source unless it was actually reviewed.
+
+### Evidence Missing
+
+List the specific facts, logs, screenshots, version details, customer confirmations, Engineering/Product confirmations, or documentation references needed before the guidance can be trusted.
+
+### Retrieval Limits
+
+Briefly state what searches were attempted and what may have been missed. Include limits such as unavailable connectors, shallow search results, ambiguous terminology, missing historical resolutions, stale records, or lack of indexed/validated knowledge sources.
+
+### Agent Validation Required
+
+State what the support agent must validate before using the suggested response with the customer. Include checks for source relevance, version match, internal-only details, unsupported defect claims, and whether Product/Engineering confirmation is required.
+
 ### Likely Root Cause
 
 Start with `Confidence: High`, `Confidence: Medium`, or `Confidence: Low`.
 
-Then explain the most likely cause based on available evidence. Clearly label assumptions and missing validation data.
+Then explain the most likely cause based on available evidence. Clearly label assumptions and missing validation data. For Low confidence, do not provide a firm root cause; list plausible hypotheses and the diagnostics needed to confirm or reject them.
 
 ### Recommended Next Steps
 
@@ -199,8 +224,12 @@ Highlight missing information, uncertain ownership, potentially stale guidance, 
 
 - Do not invent information.
 - Clearly mark assumptions.
+- Every key finding should be traceable to a listed source in Evidence Used.
 - Prefer primary evidence from the current Dynamics case, resolved similar cases, linked Jira issues, and official documentation.
 - Do not include irrelevant cases or Jira records just to fill sections.
+- Do not let weak search-result similarity drive the root cause.
+- If relevance depends mainly on shared product name, broad symptom wording, or unverified version match, cap confidence at Low.
+- Suggested customer responses are drafts until the Agent Validation Required checks are complete.
 - If evidence conflicts, say what conflicts and which source appears more reliable.
 - Use citations or source references whenever the active environment supports them.
 - Avoid exposing private internal notes verbatim when a paraphrase is sufficient for a support summary.
