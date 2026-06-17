@@ -11,6 +11,8 @@ Produce a concise, evidence-grounded investigation summary for a Microsoft Dynam
 
 Prioritize evidence quality over search quantity. Search results suggest possible relevance; reviewed source evidence establishes relevance.
 
+The investigator's responsibility is not to find supporting evidence for a hypothesis. The investigator's responsibility is to determine what evidence supports, what evidence contradicts, what evidence is missing, and what conclusions can reasonably be reached. Evidence should drive conclusions; conclusions should never drive evidence selection.
+
 ## Required Inputs
 
 Ask for missing required information only if it is not already present:
@@ -47,7 +49,18 @@ Extract search terms from the retrieved case before searching. Use several focus
 
 Prefer exact phrases for error text and case numbers. Broaden only after exact or narrow searches fail.
 
-### 3. Search historical Dynamics cases
+### 3. Search coverage strategy
+
+Before determining source relevance, use multiple independent retrieval paths when connector access allows:
+
+- Exact match search: exact case title, error message, exception text, stack trace fragments, Jira keys, defect IDs, event IDs, or distinctive case phrases. Attempt these first whenever possible.
+- Product context search: product, version, component, module, service, integration, or release. Focus on product-specific patterns and known behaviors.
+- Symptom search: customer impact, functional failures, observed behavior, error conditions, or reproduction steps. Focus on what is happening rather than only where it happens.
+- Resolution search: workaround terms, resolution terms, known issue language, engineering conclusions, closure notes, or defect descriptions. Focus on how similar issues were resolved.
+
+After searching, compare findings across paths. Identify when multiple paths support the same conclusion, when paths conflict, and when one path finds evidence that another path misses. If all material evidence comes from only one search path, reduce Retrieval Quality Assessment by one level unless there is a clear justification.
+
+### 4. Search historical Dynamics cases
 
 Search Dynamics for similar or related cases using multiple dimensions:
 
@@ -70,7 +83,7 @@ For each reviewed historical case, capture:
 
 If no similar Dynamics cases are found, explicitly say so.
 
-### 4. Validate historical case relevance
+### 5. Validate historical case relevance
 
 Classify each reviewed historical case before using it:
 
@@ -81,7 +94,7 @@ Classify each reviewed historical case before using it:
 
 List only material excluded sources in the final output; do not clutter the output with every irrelevant search result.
 
-### 5. Cross-reference Jira/Atlassian
+### 6. Cross-reference Jira/Atlassian
 
 Use the available Jira/Atlassian connector/tool to investigate:
 
@@ -102,7 +115,7 @@ Do not treat a Jira record as relevant only because it shares a product name. Ex
 
 If no relevant Jira records are found, explicitly say so.
 
-### 6. Validate Jira/Atlassian relevance
+### 7. Validate Jira/Atlassian relevance
 
 Classify each reviewed Jira/Atlassian record before using it:
 
@@ -113,9 +126,11 @@ Classify each reviewed Jira/Atlassian record before using it:
 
 Shared product names, components, labels, or keyword overlap alone do not establish relevance.
 
-### 7. Synthesize findings, confidence, and communication safety
+### 8. Synthesize findings, confidence, and communication safety
 
 Separate evidence from assumptions. Track the specific sources that support each key finding, the validation data that is still missing, and any search or connector limits that could affect the answer.
+
+If reviewed sources support materially different conclusions, do not suppress the conflict. Identify the contradiction in Key Findings, Evidence Used, and Likely Root Cause when it affects the investigation outcome. Explain which evidence appears strongest and why. Reduce confidence by one level unless the conflict can be fully resolved.
 
 Root-cause confidence must be one of:
 
@@ -134,9 +149,11 @@ Do not claim a product defect, documentation error, customer configuration probl
 
 Rate retrieval quality:
 
-- High: Relevant sources were found, reviewed, and validated with no material search gaps.
-- Medium: Useful sources were found, but some uncertainty remains around search coverage, version applicability, or source completeness.
-- Low: Missing sources, connector limits, weak search quality, unavailable repositories, or unvalidated matches materially reduce confidence.
+- High: Multiple search paths were used, relevant sources were validated, sources strongly agree, and evidence gaps are minimal.
+- Medium: Relevant sources were found, but some search gaps remain, minor source conflicts exist, or version applicability still requires validation.
+- Low: Evidence is limited, search gaps are significant, connector limitations affect coverage, findings conflict, or source quality is weak.
+
+Retrieval quality should influence confidence but must not automatically determine confidence.
 
 Classify information before drafting the customer response:
 
@@ -146,7 +163,7 @@ Classify information before drafting the customer response:
 
 Only Customer-Safe information may appear in the Suggested Agent Response.
 
-### 8. Log the investigation
+### 9. Log the investigation
 
 After producing the investigation summary, append one row to:
 `~/codex-case-investigation-logs/case-investigations.csv`
@@ -228,11 +245,13 @@ List relevant Jira tickets. For each, include Jira key, title, relevance classif
 
 ### Excluded Results
 
-List material reviewed sources that were excluded from evidence. Include the source identifier, classification, and reason excluded. If none were excluded, write: "No reviewed sources were excluded."
+List material reviewed sources that appeared relevant during investigation, could reasonably have influenced findings, and required explicit exclusion due to weak evidence or poor relevance. Include the source identifier, classification, and reason excluded. Do not include every rejected search result; this section is for transparency, not exhaustive reporting. If none were excluded, write: "No reviewed sources were excluded."
 
 ### Evidence Used
 
-List the exact Dynamics cases, Jira records, documentation links, release notes, or other sources that support the key findings. For each source, explain what claim it supports. Do not cite a source unless it was actually reviewed.
+List the exact Dynamics cases, Jira records, documentation links, release notes, or other sources that support the key findings. For each source, include Source Type, Source, and Supports. Do not cite a source unless it was actually reviewed.
+
+Use these source types when applicable: Current Dynamics Case, Historical Dynamics Case, Jira Record, Engineering Investigation, Official Product Documentation, Knowledge Base Article, Release Notes, Known Issue Record, Product Team Guidance, Customer-Provided Evidence.
 
 ### Evidence Missing
 
@@ -240,7 +259,7 @@ List the specific facts, logs, screenshots, version details, customer confirmati
 
 ### Retrieval Limits
 
-Briefly state what searches were attempted and what may have been missed. Include limits such as unavailable connectors, shallow search results, ambiguous terminology, missing historical resolutions, stale records, or lack of indexed/validated knowledge sources.
+Briefly state what searches were attempted and what may have been missed. Include the search coverage paths used, significant differences between paths, and limits such as unavailable connectors, shallow search results, ambiguous terminology, missing historical resolutions, stale records, or lack of indexed/validated knowledge sources.
 
 ### Retrieval Quality Assessment
 
@@ -279,11 +298,12 @@ Highlight missing information, uncertain ownership, potentially stale guidance, 
 - Do not overstate confidence.
 - Clearly mark assumptions.
 - Every key finding should be traceable to a listed source in Evidence Used.
-- Prefer primary evidence from the current Dynamics case, official documentation, confirmed Jira defects or known issues, Engineering conclusions, resolved Strong Match historical cases, release notes, and Partial Match cases, roughly in that order. If sources conflict, explain the conflict and which source appears more reliable in context.
+- Prefer, without blindly defaulting to, evidence from the current Dynamics case, customer-provided evidence, official product documentation, confirmed Jira defects, Engineering conclusions, known issue records, release notes, resolved Strong Match historical cases, Partial Match historical cases, and Weak Match historical cases, roughly in that order. If a lower-priority source contradicts a higher-priority source, explain the conflict and prefer the higher-priority source unless evidence clearly justifies otherwise.
 - Do not include irrelevant cases or Jira records just to fill sections.
 - Do not let weak search-result similarity drive the root cause.
 - If relevance depends mainly on shared product name, broad symptom wording, or unverified version match, cap confidence at Low.
 - Weak Match sources must not materially drive root cause or customer guidance.
+- Contradictory evidence must be documented when it materially affects the investigation outcome.
 - Historical cases must not be used as evidence when product names merely match, version relevance is unknown, resolution is missing, similarity is keyword-only, or the resolution was not validated.
 - Jira issues must not be used as evidence solely because product names, components, labels, or keywords overlap.
 - Suggested customer responses are drafts until the Agent Validation Required checks are complete.
@@ -297,10 +317,13 @@ Before finalizing, verify that you have attempted the following when connector a
 
 - Exact lookup for the current Dynamics case number.
 - Search by exact title or distinctive phrase.
-- Search by product/component/version and symptom/error.
+- Search by product/component/version.
+- Search by symptom/error/customer impact/reproduction terms.
+- Search by resolution/workaround/known issue/engineering conclusion terms.
 - Search by customer/account or partner.
 - Search for linked Jira keys and Jira keys found in notes/comments.
 - Search Jira by product/component plus symptom/error.
+- Comparison of findings across search coverage paths.
 - Review of the highest-similarity historical cases and Jira records before citing them as relevant.
 - Relevance classification for each cited historical case and Jira record.
 - Retrieval quality rating and communication classification before drafting the customer response.

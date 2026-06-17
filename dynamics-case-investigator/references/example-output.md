@@ -15,6 +15,7 @@ Plain-language issue summary and customer impact.
 - Current evidence suggests [clarification / configuration issue / environment issue / known defect / product behavior / unknown].
 - Historical cases show [pattern], with [resolution/workaround] when available.
 - Jira records show [linked defect/known issue/escalation/release item], or no relevant Jira records were found.
+- Contradictory evidence: [describe material conflict if sources disagree], with [source] currently appearing stronger because [reason].
 
 ## Similar Historical Cases
 
@@ -37,10 +38,11 @@ No reviewed sources were excluded.
 
 ## Evidence Used
 
-- Current case CAS-##########: supports [claim] because [specific reviewed evidence].
-- Historical case CAS-##########: supports [claim] because [resolved outcome / workaround / matching error].
-- PROJECT-12345: supports [claim] because [confirmed engineering conclusion / affected version / workaround].
-- Documentation or release note link: supports [claim] because [specific guidance or fix statement].
+- Source Type: Current Dynamics Case. Source: CAS-##########. Supports: [claim] because [specific reviewed evidence].
+- Source Type: Historical Dynamics Case. Source: CAS-##########. Supports: [claim] because [resolved outcome / workaround / matching error].
+- Source Type: Jira Record. Source: PROJECT-12345. Supports: [claim] because [confirmed engineering conclusion / affected version / workaround].
+- Source Type: Official Product Documentation / Release Notes / Known Issue Record. Source: [link or reference]. Supports: [claim] because [specific guidance or fix statement].
+- Source Type: Customer-Provided Evidence. Source: [log, screenshot, reproduction detail, or customer confirmation]. Supports or contradicts: [claim] because [specific evidence].
 
 ## Evidence Missing
 
@@ -51,14 +53,17 @@ No reviewed sources were excluded.
 
 Searches attempted:
 
-- Exact lookup by current case number.
-- Search by exact title or distinctive phrase.
-- Search by product/component/version and symptom/error.
+- Exact match path: current case number, exact title or distinctive phrase, exact error text, Jira keys, defect IDs, event IDs, or stack fragments.
+- Product context path: product, component, version, module, service, integration, or release.
+- Symptom path: customer impact, functional failure, observed behavior, error condition, or reproduction terms.
+- Resolution path: workaround, resolution, known issue, engineering conclusion, closure note, or defect description terms.
 - Search by customer/account or partner.
 - Jira search by product/component plus symptom/error.
 
 Possible gaps:
 
+- All material evidence came from [one/multiple] search path(s); retrieval quality was adjusted accordingly.
+- Search paths [agreed/conflicted] on [material point].
 - Similar records may use different terminology.
 - Older cases may have incomplete resolution notes.
 - Broad product or symptom matches were excluded unless a concrete similarity was found.
@@ -68,7 +73,7 @@ Possible gaps:
 
 Retrieval quality: Medium.
 
-Relevant sources were found and reviewed, but version applicability and Product/Engineering confirmation remain open.
+Relevant sources were found and reviewed across [search paths used], but version applicability, minor source conflicts, or Product/Engineering confirmation remain open. Retrieval quality influences confidence but does not automatically determine it.
 
 ## Communication Classification
 
@@ -96,6 +101,8 @@ Approval Required:
 Confidence: Medium.
 
 Most likely [cause], based on [evidence]. Assumption: [assumption]. Missing validation: [data needed].
+
+Contradictory evidence: [describe conflict if material]. Strongest evidence appears to be [source] because [reason]. Confidence was [kept/reduced] because [resolution or unresolved conflict].
 
 For Low confidence:
 
