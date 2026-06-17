@@ -18,11 +18,22 @@ Plain-language issue summary and customer impact.
 
 ## Similar Historical Cases
 
-- CAS-##########, "title": similarity reason. Outcome: resolution/workaround/closure reason. Time to resolution: X days if available.
+- CAS-##########, "title": Strong Match. Similarity: [same component/version/error/customer impact]. Outcome: resolution/workaround/closure reason. Time to resolution: X days if available.
+- CAS-##########, "title": Partial Match. Similarity: [shared symptom/component]. Validation needed: [version/environment/resolution gap].
 
 ## Relevant Jira Records
 
-- PROJECT-12345, "title": status, priority, affected/fix version if available. Why it matters to this case.
+- PROJECT-12345, "title": Strong Match. Status: [status], priority: [priority], affected/fix version if available. Why it matters: [specific symptom/error/version/workaround/engineering conclusion].
+- PROJECT-67890, "title": Partial Match. Status: [status]. Why it matters: [specific relationship]. Validation needed: [version/product confirmation].
+
+## Excluded Results
+
+- CAS-##########: Excluded. Reason: product name matched, but symptom/version/resolution did not align.
+- PROJECT-00000: Excluded. Reason: keyword overlap only; no concrete relationship to the current issue.
+
+If none were excluded:
+
+No reviewed sources were excluded.
 
 ## Evidence Used
 
@@ -53,6 +64,26 @@ Possible gaps:
 - Broad product or symptom matches were excluded unless a concrete similarity was found.
 - Validated/indexed knowledge sources may be unavailable in the active environment.
 
+## Retrieval Quality Assessment
+
+Retrieval quality: Medium.
+
+Relevant sources were found and reviewed, but version applicability and Product/Engineering confirmation remain open.
+
+## Communication Classification
+
+Customer-Safe:
+
+- [Troubleshooting step, log request, confirmed workaround, or externally appropriate explanation].
+
+Internal-Only:
+
+- [Jira discussion, engineering assumption, internal escalation context, or sensitive internal case note].
+
+Approval Required:
+
+- [Defect confirmation, release commitment, ETA statement, roadmap reference, or product guidance requiring Product/Engineering approval].
+
 ## Agent Validation Required
 
 - Confirm the cited historical cases and Jira records are genuinely relevant to the current case.
@@ -82,6 +113,8 @@ No firm root cause can be stated from the current evidence. Plausible hypotheses
 Hi [customer/contact],
 
 Thank you for the details. Based on the information currently available, [plain-language explanation without overclaiming]. To confirm the next step, could you please provide [focused missing evidence]? Once we have this, we can [next action].
+
+Use only the Customer-Safe items above. Do not include Internal-Only or Approval Required information unless approval has been confirmed.
 
 ## Risks / Watchouts
 

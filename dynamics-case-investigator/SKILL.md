@@ -1,13 +1,15 @@
 ---
 name: dynamics-case-investigator
-description: retrieve and analyze a specific microsoft dynamics support case, then search historical dynamics cases and connected jira/atlassian records to produce an agent-ready investigation summary. use when the user provides a dynamics case number or cas reference and asks for support case review, similar-case research, jira defect or escalation cross-reference, likely root cause, recommended next steps, or a customer-ready agent response. especially useful for microsoft dynamics customer support workflows that require evidence-grounded summaries across current case details, historical cases, known issues, defects, releases, feature requests, and escalations.
+description: retrieve and analyze a specific microsoft dynamics support case, then search historical dynamics cases and connected jira/atlassian records, validate source relevance, and produce an evidence-grounded investigation summary with confidence scoring, source traceability, and customer-safe recommendations. use when the user provides a dynamics case number or cas reference and asks for support case review, similar-case research, jira defect or escalation cross-reference, likely root cause, recommended next steps, or a customer-ready agent response. especially useful for microsoft dynamics customer support workflows that require evidence-grounded summaries across current case details, historical cases, known issues, defects, releases, feature requests, and escalations.
 ---
 
 # Dynamics Case Investigator
 
 ## Purpose
 
-Produce a concise, evidence-grounded investigation summary for a Microsoft Dynamics support case by reviewing the current case, finding historically similar Dynamics cases, cross-referencing Jira/Atlassian records, and drafting practical next actions for the support agent.
+Produce a concise, evidence-grounded investigation summary for a Microsoft Dynamics support case by reviewing the current case, finding historically similar Dynamics cases, cross-referencing Jira/Atlassian records, validating source relevance, and drafting practical next actions for the support agent.
+
+Prioritize evidence quality over search quantity. Search results suggest possible relevance; reviewed source evidence establishes relevance.
 
 ## Required Inputs
 
@@ -30,7 +32,7 @@ Use the available Microsoft Dynamics connector/tool to retrieve the full case re
 - Timeline of activity, customer communications, internal notes, handoffs, ownership, queue/team, priority, severity, SLA warnings, and current status.
 - Any linked Jira issue keys, defect IDs, known issue IDs, escalation records, feature requests, release references, documentation links, or engineering notes.
 
-If a field is unavailable or the connector does not return it, do not invent it. Mark it as not found or unavailable only when it matters to the investigation.
+If a field is unavailable or the connector does not return it, do not invent it. Mark it as not found or unavailable only when it matters to the investigation. Review internal notes and customer communications for evidence, but paraphrase sensitive content unless exact wording is necessary.
 
 ### 2. Build search terms from the current case
 
@@ -54,11 +56,12 @@ Search Dynamics for similar or related cases using multiple dimensions:
 - Same customer/account, partner, environment, release, defect, known issue, root cause, workaround, or resolution.
 - Cases that reference any linked Jira keys or related engineering terms.
 
-Review enough case details to verify relevance before including a case in the final answer. Prioritize cases with confirmed resolutions, workarounds, engineering conclusions, or strong symptom matches.
+Review enough case details to verify relevance before including a case in the final answer. Search-result ranking must never be treated as proof of relevance. Prioritize cases with confirmed resolutions, workarounds, engineering conclusions, or strong symptom matches.
 
-For each relevant historical case, capture:
+For each reviewed historical case, capture:
 
 - Case number and title.
+- Relevance classification: Strong Match, Partial Match, Weak Match, or Excluded.
 - Similarity reason.
 - Outcome, final resolution, workaround, or closure reason.
 - Useful troubleshooting steps or evidence requested.
@@ -67,7 +70,18 @@ For each relevant historical case, capture:
 
 If no similar Dynamics cases are found, explicitly say so.
 
-### 4. Cross-reference Jira/Atlassian
+### 4. Validate historical case relevance
+
+Classify each reviewed historical case before using it:
+
+- Strong Match: Same product/component, same version or confirmed cross-version relevance, same symptom/customer impact, and a confirmed resolution, workaround, or engineering conclusion. May be used as primary evidence.
+- Partial Match: Concrete similarity exists, but version, environment, component, or resolution still needs validation. May support findings but cannot independently justify High confidence.
+- Weak Match: Limited overlap such as similar wording, broad symptom language, or shared product with different symptom/version. May be mentioned as a weak signal but must not materially drive the root cause.
+- Excluded: Similarity is keyword-only or product-only, version relevance is unclear, resolution is missing, the case was abandoned, or the relationship cannot be justified. Must not be used as evidence.
+
+List only material excluded sources in the final output; do not clutter the output with every irrelevant search result.
+
+### 5. Cross-reference Jira/Atlassian
 
 Use the available Jira/Atlassian connector/tool to investigate:
 
@@ -79,6 +93,7 @@ Use the available Jira/Atlassian connector/tool to investigate:
 For each relevant Jira record, capture:
 
 - Jira key, title, issue type, status, priority/severity, owner/team if available.
+- Relevance classification: Strong Match, Partial Match, Weak Match, or Excluded.
 - Product, component, fix version, affected version, release, labels, linked issues, and customer/account references.
 - Why the Jira record matters to the current case.
 - Any confirmed workaround, engineering conclusion, release target, fix availability, or requested evidence.
@@ -87,7 +102,18 @@ Do not treat a Jira record as relevant only because it shares a product name. Ex
 
 If no relevant Jira records are found, explicitly say so.
 
-### 5. Synthesize findings and confidence
+### 6. Validate Jira/Atlassian relevance
+
+Classify each reviewed Jira/Atlassian record before using it:
+
+- Strong Match: Directly supports the current issue through matching symptom/error/component/version or a linked Dynamics case, confirmed defect, known issue, workaround, or engineering conclusion.
+- Partial Match: Supports the investigation but needs validation, such as version applicability or Product/Engineering confirmation.
+- Weak Match: Related but insufficiently similar. It must not materially drive the root cause.
+- Excluded: Not sufficiently relevant, keyword-only, product-only, label-only, or lacking an explainable relationship to the current case. Must not be used as evidence.
+
+Shared product names, components, labels, or keyword overlap alone do not establish relevance.
+
+### 7. Synthesize findings, confidence, and communication safety
 
 Separate evidence from assumptions. Track the specific sources that support each key finding, the validation data that is still missing, and any search or connector limits that could affect the answer.
 
@@ -106,7 +132,21 @@ Apply confidence gating:
 
 Do not claim a product defect, documentation error, customer configuration problem, or official workaround unless supported by Dynamics/Jira evidence or cited documentation.
 
-### 6. Log the investigation
+Rate retrieval quality:
+
+- High: Relevant sources were found, reviewed, and validated with no material search gaps.
+- Medium: Useful sources were found, but some uncertainty remains around search coverage, version applicability, or source completeness.
+- Low: Missing sources, connector limits, weak search quality, unavailable repositories, or unvalidated matches materially reduce confidence.
+
+Classify information before drafting the customer response:
+
+- Customer-Safe: Troubleshooting steps, log requests, confirmed product behavior, confirmed workarounds, or externally appropriate explanations.
+- Internal-Only: Jira discussion, engineering assumptions, escalation commentary, internal investigation details, or sensitive internal notes.
+- Approval Required: Defect confirmation, release commitments, ETA statements, roadmap references, or guidance needing Product/Engineering approval.
+
+Only Customer-Safe information may appear in the Suggested Agent Response.
+
+### 8. Log the investigation
 
 After producing the investigation summary, append one row to:
 `~/codex-case-investigation-logs/case-investigations.csv`
@@ -180,11 +220,15 @@ Explain what appears to be happening. Include relevant patterns from historical 
 
 ### Similar Historical Cases
 
-List the most relevant previous Dynamics cases. For each, include case number, title if useful, similarity reason, outcome, resolution/workaround, and time to resolution when available. If none were found, write: "No similar historical Dynamics cases were found from the available searches."
+List the most relevant previous Dynamics cases. For each, include case number, title if useful, relevance classification, similarity reason, outcome, resolution/workaround, and time to resolution when available. If none were found, write: "No similar historical Dynamics cases were found from the available searches."
 
 ### Relevant Jira Records
 
-List relevant Jira tickets. For each, include Jira key, title, issue type/status, priority if useful, linked product/release/version when available, and why it matters. If none were found, write: "No relevant Jira records were found from the available searches."
+List relevant Jira tickets. For each, include Jira key, title, relevance classification, issue type/status, priority if useful, linked product/release/version when available, and why it matters. If none were found, write: "No relevant Jira records were found from the available searches."
+
+### Excluded Results
+
+List material reviewed sources that were excluded from evidence. Include the source identifier, classification, and reason excluded. If none were excluded, write: "No reviewed sources were excluded."
 
 ### Evidence Used
 
@@ -198,9 +242,17 @@ List the specific facts, logs, screenshots, version details, customer confirmati
 
 Briefly state what searches were attempted and what may have been missed. Include limits such as unavailable connectors, shallow search results, ambiguous terminology, missing historical resolutions, stale records, or lack of indexed/validated knowledge sources.
 
+### Retrieval Quality Assessment
+
+Rate retrieval quality as High, Medium, or Low. Explain the rating in one or two short sentences.
+
+### Communication Classification
+
+Separate important findings or recommendations into Customer-Safe, Internal-Only, and Approval Required. Only Customer-Safe information may appear in the Suggested Agent Response.
+
 ### Agent Validation Required
 
-State what the support agent must validate before using the suggested response with the customer. Include checks for source relevance, version match, internal-only details, unsupported defect claims, and whether Product/Engineering confirmation is required.
+State what the support agent must validate before using the suggested response with the customer. Include checks for source relevance, version match, product/environment applicability, customer-specific assumptions, internal-only details, unsupported defect claims, and whether Product/Engineering confirmation is required.
 
 ### Likely Root Cause
 
@@ -214,7 +266,7 @@ Provide practical support-agent actions, such as troubleshooting checks, logs or
 
 ### Suggested Agent Response
 
-Draft a professional customer-facing response aligned with the current case status. Do not overpromise fixes, confirm defects, or declare official guidance unless the evidence supports it. Ask for only the most useful missing information.
+Draft a professional customer-facing response aligned with the current case status. Use only Customer-Safe information. Do not overpromise fixes, confirm defects, declare official guidance, expose internal Jira/Dynamics details, or commit to timelines unless approved evidence supports it. Ask for only the most useful missing information.
 
 ### Risks / Watchouts
 
@@ -223,14 +275,18 @@ Highlight missing information, uncertain ownership, potentially stale guidance, 
 ## Evidence Rules
 
 - Do not invent information.
+- Do not fabricate evidence.
+- Do not overstate confidence.
 - Clearly mark assumptions.
 - Every key finding should be traceable to a listed source in Evidence Used.
-- Prefer primary evidence from the current Dynamics case, resolved similar cases, linked Jira issues, and official documentation.
+- Prefer primary evidence from the current Dynamics case, official documentation, confirmed Jira defects or known issues, Engineering conclusions, resolved Strong Match historical cases, release notes, and Partial Match cases, roughly in that order. If sources conflict, explain the conflict and which source appears more reliable in context.
 - Do not include irrelevant cases or Jira records just to fill sections.
 - Do not let weak search-result similarity drive the root cause.
 - If relevance depends mainly on shared product name, broad symptom wording, or unverified version match, cap confidence at Low.
+- Weak Match sources must not materially drive root cause or customer guidance.
+- Historical cases must not be used as evidence when product names merely match, version relevance is unknown, resolution is missing, similarity is keyword-only, or the resolution was not validated.
+- Jira issues must not be used as evidence solely because product names, components, labels, or keywords overlap.
 - Suggested customer responses are drafts until the Agent Validation Required checks are complete.
-- If evidence conflicts, say what conflicts and which source appears more reliable.
 - Use citations or source references whenever the active environment supports them.
 - Avoid exposing private internal notes verbatim when a paraphrase is sufficient for a support summary.
 - Do not share internal-only Jira or Dynamics details in the customer-facing response unless they are appropriate for external communication.
@@ -246,6 +302,8 @@ Before finalizing, verify that you have attempted the following when connector a
 - Search for linked Jira keys and Jira keys found in notes/comments.
 - Search Jira by product/component plus symptom/error.
 - Review of the highest-similarity historical cases and Jira records before citing them as relevant.
+- Relevance classification for each cited historical case and Jira record.
+- Retrieval quality rating and communication classification before drafting the customer response.
 
 ## Style
 
