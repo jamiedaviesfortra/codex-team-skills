@@ -73,7 +73,7 @@ Possible gaps:
 
 Retrieval quality: Medium.
 
-Relevant sources were found and reviewed across [search paths used], but version applicability, minor source conflicts, or Product/Engineering confirmation remain open. Retrieval quality influences confidence but does not automatically determine it.
+Relevant sources were found and reviewed across [search paths used], but version applicability, minor source conflicts, or Product/Engineering confirmation remain open. Retrieval quality influences confidence but does not automatically determine it. Example: retrieval quality can be High while confidence remains Low if evidence conflicts, or Medium while confidence is High if fewer sources directly support the conclusion.
 
 ## Communication Classification
 
@@ -102,6 +102,13 @@ Confidence: Medium.
 
 Most likely [cause], based on [evidence]. Assumption: [assumption]. Missing validation: [data needed].
 
+Supported by:
+
+- [Source type 1]: [source].
+- [Source type 2]: [source].
+
+Confidence limitation, if applicable: The conclusion is currently supported by a single source type. Additional independent validation was not available during the investigation.
+
 Contradictory evidence: [describe conflict if material]. Strongest evidence appears to be [source] because [reason]. Confidence was [kept/reduced] because [resolution or unresolved conflict].
 
 For Low confidence:
@@ -119,7 +126,15 @@ No firm root cause can be stated from the current evidence. Plausible hypotheses
 
 Hi [customer/contact],
 
-Thank you for the details. Based on the information currently available, [plain-language explanation without overclaiming]. To confirm the next step, could you please provide [focused missing evidence]? Once we have this, we can [next action].
+Thank you for the details provided so far.
+
+Based on the information currently available, we have confirmed that [confirmed customer-safe finding].
+
+We are still reviewing [open investigation item / suspected cause / validation point], so we are not treating this as confirmed yet.
+
+To continue the investigation, could you please provide [focused missing evidence, logs, screenshots, reproduction details, exact build/version, or environment details]?
+
+Once we have that information, we will review it and provide the next recommended step.
 
 Use only the Customer-Safe items above. Do not include Internal-Only or Approval Required information unless approval has been confirmed.
 
